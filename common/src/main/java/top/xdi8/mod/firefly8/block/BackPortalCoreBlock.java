@@ -2,14 +2,13 @@ package top.xdi8.mod.firefly8.block;
 
 import com.mojang.serialization.MapCodec;
 import io.github.qwerty770.mcmod.xdi8.entity.AbstractBlockWithEntity;
-import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.advancements.triggers.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -70,7 +69,7 @@ public class BackPortalCoreBlock extends AbstractBlockWithEntity<BackPortalCoreB
             level.gameEvent(player, GameEvent.BLOCK_PLACE, pos1);
             if (player instanceof ServerPlayer) {
                 CriteriaTriggers.PLACED_BLOCK.trigger((ServerPlayer) player, pos1, stack);
-                stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
+                stack.hurtAndBreak(1, player, hand);
             }
             return InteractionResult.SUCCESS;
         }

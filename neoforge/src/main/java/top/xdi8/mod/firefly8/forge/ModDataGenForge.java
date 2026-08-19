@@ -10,7 +10,7 @@ import top.xdi8.mod.firefly8.forge.datagen.*;
 import java.util.List;
 import java.util.Set;
 
-@EventBusSubscriber(modid = "firefly8", bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = "firefly8")
 public class ModDataGenForge {
     @SubscribeEvent
     public static void gatherData(GatherDataEvent.Client event) {

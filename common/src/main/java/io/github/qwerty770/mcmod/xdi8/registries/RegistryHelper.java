@@ -8,15 +8,15 @@ import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
 import io.github.qwerty770.mcmod.xdi8.annotation.StableApi;
 import io.github.qwerty770.mcmod.xdi8.tag.TagContainer;
-import net.minecraft.advancements.CriterionTrigger;
-import net.minecraft.advancements.critereon.ItemSubPredicate;
+import net.minecraft.advancements.triggers.CriterionTrigger;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.component.predicates.DataComponentPredicate;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.stats.StatFormatter;
 import net.minecraft.world.entity.Entity;
@@ -49,6 +49,7 @@ public abstract class RegistryHelper {
     public static final DeferredRegister<Block> blockRegistry = ofModRegistry(Registries.BLOCK);
     public static final DeferredRegister<Item> itemRegistry = ofModRegistry(Registries.ITEM);
     public static final DeferredRegister<DataComponentType<?>> dataComponentTypeRegistry = ofModRegistry(Registries.DATA_COMPONENT_TYPE);
+    public static final DeferredRegister<DataComponentPredicate.Type<?>> dataComponentPredicateTypeRegistry = ofModRegistry(Registries.DATA_COMPONENT_PREDICATE_TYPE);
     public static final DeferredRegister<BlockEntityType<?>> blockEntityRegistry = ofModRegistry(Registries.BLOCK_ENTITY_TYPE);
     public static final DeferredRegister<RecipeBookCategory> recipeBookCategoryRegistry = ofModRegistry(Registries.RECIPE_BOOK_CATEGORY);
     public static final DeferredRegister<RecipeDisplay.Type<?>> recipeDisplayRegistry = ofModRegistry(Registries.RECIPE_DISPLAY);
@@ -58,13 +59,12 @@ public abstract class RegistryHelper {
     public static final DeferredRegister<SoundEvent> soundRegistry = ofModRegistry(Registries.SOUND_EVENT);
     public static final DeferredRegister<ParticleType<?>> particleTypeRegistry = ofModRegistry(Registries.PARTICLE_TYPE);
     public static final DeferredRegister<EntityType<?>> entityTypeRegistry = ofModRegistry(Registries.ENTITY_TYPE);
-    public static final DeferredRegister<ResourceLocation> statRegistry = ofModRegistry(Registries.CUSTOM_STAT);
+    public static final DeferredRegister<Identifier> statRegistry = ofModRegistry(Registries.CUSTOM_STAT);
     public static final DeferredRegister<PoiType> poiTypeRegistry = ofModRegistry(Registries.POINT_OF_INTEREST_TYPE);
-    public static final DeferredRegister<ItemSubPredicate.Type<?>> itemSubPredicateRegistry = ofModRegistry(Registries.ITEM_SUB_PREDICATE_TYPE);
     public static final DeferredRegister<CriterionTrigger<?>> criterionTriggerRegistry = ofModRegistry(Registries.TRIGGER_TYPE);
     public static final DeferredRegister<CreativeModeTab> creativeTabRegistry = ofModRegistry(Registries.CREATIVE_MODE_TAB);
 
-    public static ResourceLocation id(String id) {
+    public static Identifier id(String id) {
         return ResourceLocationTool.create(Firefly8.MODID, id);
     }
 
@@ -81,7 +81,7 @@ public abstract class RegistryHelper {
     }
 
     public static <B extends Block> RegistrySupplier<B> block(ResourceKey<Block> resourceKey, Function<BlockBehaviour.Properties, B> function, BlockBehaviour.Properties properties) {
-        return blockRegistry.register(resourceKey.location(), () -> function.apply(properties.setId(resourceKey)));
+        return blockRegistry.register(resourceKey.identifier(), () -> function.apply(properties.setId(resourceKey)));
     }
 
     public static RegistrySupplier<Block> defaultBlock(String id, BlockBehaviour.Properties prop) {
@@ -94,11 +94,11 @@ public abstract class RegistryHelper {
 
     public static <I extends Item> RegistrySupplier<I> item(String id, Function<Item.Properties, I> function, Supplier<Item.Properties> properties) {
         ResourceKey<Item> key = itemId(id);
-        return itemRegistry.register(key.location(), () -> function.apply(properties.get().setId(key)));
+        return itemRegistry.register(key.identifier(), () -> function.apply(properties.get().setId(key)));
     }
 
     public static <I extends Item> RegistrySupplier<I> item(ResourceKey<Item> resourceKey, Function<Item.Properties, I> function, Item.Properties properties) {
-        return itemRegistry.register(resourceKey.location(), () -> function.apply(properties.setId(resourceKey)));
+        return itemRegistry.register(resourceKey.identifier(), () -> function.apply(properties.setId(resourceKey)));
     }
 
     public static RegistrySupplier<Item> defaultItem(String id, Item.Properties properties) {
@@ -113,6 +113,10 @@ public abstract class RegistryHelper {
 
     public static <T> RegistrySupplier<DataComponentType<T>> componentType(String id, Supplier<DataComponentType<T>> componentType) {
         return dataComponentTypeRegistry.register(id, componentType);
+    }
+
+    public static <T extends DataComponentPredicate> RegistrySupplier<DataComponentPredicate.Type<T>> componentPredicateType(String id, Codec<T> codec) {
+        return dataComponentPredicateTypeRegistry.register(id, () -> new DataComponentPredicate.ConcreteType<>(codec));
     }
 
     @SafeVarargs
@@ -133,7 +137,7 @@ public abstract class RegistryHelper {
     }
 
     public static <I extends RecipeInput, T extends Recipe<I>> RegistrySupplier<RecipeType<T>> recipeType(String id) {
-        ResourceLocation id2 = id(id);
+        Identifier id2 = id(id);
         return recipeTypeRegistry.register(id, () -> new RecipeType<>() {
             @Override
             public String toString() {
@@ -170,13 +174,13 @@ public abstract class RegistryHelper {
         return TagContainer.register(id(id), BuiltInRegistries.ITEM);
     }
 
-    public static RegistrySupplier<ResourceLocation> stat(String id, StatFormatter statFormatter) {
-        ResourceLocation id2 = id(id);
+    public static RegistrySupplier<Identifier> stat(String id, StatFormatter statFormatter) {
+        Identifier id2 = id(id);
         // TODO CUSTOM.get(id2, statFormatter);
         return statRegistry.register(id, () -> id2);
     }
 
-    public static RegistrySupplier<ResourceLocation> stat(String id) {
+    public static RegistrySupplier<Identifier> stat(String id) {
         return stat(id, StatFormatter.DEFAULT);
     }
 
@@ -186,13 +190,11 @@ public abstract class RegistryHelper {
 
     public static RegistrySupplier<PoiType> poiType(String id, int maxTickets, int validRange, RegistrySupplier<Block> blockSupplier) {
         RegistrySupplier<PoiType> poi = poiType(id, maxTickets, validRange, () -> ImmutableSet.copyOf(blockSupplier.get().getStateDefinition().getPossibleStates()));
-        if (Platform.isFabric()) blockSupplier.listen(block ->
-                PoiTypes.registerBlockStates(poi, ImmutableSet.copyOf(block.getStateDefinition().getPossibleStates())));
+        if (Platform.isFabric()) {
+            blockSupplier.listen(block -> PoiTypes.registerBlockStates(
+                    poi.asHolder(), ImmutableSet.copyOf(block.getStateDefinition().getPossibleStates())));
+        }
         return poi;
-    }
-
-    public static <T extends ItemSubPredicate> RegistrySupplier<ItemSubPredicate.Type<T>> itemSubPredicateType(String id, Codec<T> codec) {
-        return itemSubPredicateRegistry.register(id, () -> new ItemSubPredicate.Type<>(codec));
     }
 
     public static <T extends CriterionTrigger<?>> RegistrySupplier<T> criterionTrigger(String id, Supplier<T> trigger) {

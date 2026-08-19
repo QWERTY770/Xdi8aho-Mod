@@ -3,21 +3,20 @@ package top.xdi8.mod.firefly8.item.indium;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.SwordItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
-public class IndiumSwordItem extends SwordItem {
+public class IndiumSwordItem extends Item {
     public IndiumSwordItem(Properties pProperties) {
-        super(IndiumToolMaterial.INDIUM, 3, -2.4F, pProperties.durability(36));
+        super(IndiumToolMaterial.INDIUM.applySwordProperties(pProperties.durability(36), 3.0F, -2.4F));
     }
 
     @Override
-    public boolean hurtEnemy(@NotNull ItemStack pStack, @NotNull LivingEntity pTarget, @NotNull LivingEntity pAttacker) {
-        if (!super.hurtEnemy(pStack, pTarget, pAttacker)) return false;
+    public void hurtEnemy(@NotNull ItemStack pStack, @NotNull LivingEntity pTarget, @NotNull LivingEntity pAttacker) {
+        super.hurtEnemy(pStack, pTarget, pAttacker);
         IndiumToolMaterial.dropNuggets(pStack, pTarget, pAttacker);
-        return true;
     }
 
     @Override

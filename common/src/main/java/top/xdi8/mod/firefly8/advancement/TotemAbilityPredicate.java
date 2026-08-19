@@ -3,11 +3,11 @@ package top.xdi8.mod.firefly8.advancement;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.qwerty770.mcmod.xdi8.registries.ResourceLocationTool;
-import net.minecraft.advancements.critereon.SingleComponentItemPredicate;
+import net.minecraft.advancements.predicates.SingleComponentItemPredicate;
 import net.minecraft.core.component.DataComponentType;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 import top.xdi8.mod.firefly8.Firefly8;
 import top.xdi8.mod.firefly8.core.totem.TotemAbilities;
 import top.xdi8.mod.firefly8.core.totem.TotemAbility;
@@ -17,6 +17,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public record TotemAbilityPredicate(List<TotemAbility> totemAbilities) implements SingleComponentItemPredicate<String> {
+    public boolean matches(@NonNull String value) {
+        return TotemAbilities.byId(ResourceLocationTool.create(value)).filter(totemAbilities::contains).isPresent();
+    }
+
     public static final Codec<TotemAbilityPredicate> CODEC = RecordCodecBuilder.create(
             (instance) -> instance.group(Codec.STRING.listOf().fieldOf("totems").forGetter(TotemAbilityPredicate::getString)).apply(instance, TotemAbilityPredicate::fromString)
     );
@@ -29,7 +33,7 @@ public record TotemAbilityPredicate(List<TotemAbility> totemAbilities) implement
         List<String> list = new ArrayList<>();
         for (TotemAbility ability : totemAbilities) {
             try {
-                ResourceLocation location = ability.getId();
+                Identifier location = ability.getId();
                 list.add(location.toString());
             } catch (IllegalStateException exception) {
                 Firefly8.LOGGER.error(exception.toString());
@@ -43,8 +47,4 @@ public record TotemAbilityPredicate(List<TotemAbility> totemAbilities) implement
         return FireflyDataComponentTypes.TOTEM.get();
     }
 
-    @Override
-    public boolean matches(@NotNull ItemStack stack, @NotNull String value) {
-        return TotemAbilities.byId(ResourceLocationTool.create(value)).filter(totemAbilities::contains).isPresent();
-    }
 }

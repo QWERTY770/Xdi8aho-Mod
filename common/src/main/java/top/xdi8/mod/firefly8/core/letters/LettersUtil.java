@@ -2,7 +2,7 @@ package top.xdi8.mod.firefly8.core.letters;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.ApiStatus;
 import top.xdi8.mod.firefly8.core.letters.event.Xdi8RegistryEvents;
 
@@ -14,23 +14,18 @@ import java.util.stream.Collectors;
 
 public final class LettersUtil {
     private LettersUtil() {}
-    private static final BiMap<ResourceLocation, KeyedLetter> LETTER_MAP = HashBiMap.create(DefaultXdi8Letters.BY_ID);
+    private static final BiMap<Identifier, KeyedLetter> LETTER_MAP = HashBiMap.create(DefaultXdi8Letters.BY_ID);
     // Mutable
-    private static final List<ResourceLocation> ID_LIST =
+    private static final List<Identifier> ID_LIST =
             new ArrayList<>(DefaultXdi8Letters.BY_ID.keySet().stream()
                     .sorted(Comparator.comparingInt(id -> DefaultXdi8Letters.BY_ID.get(id).lowercase()))
                     .collect(Collectors.toList()));
 
-    public static KeyedLetter byId(ResourceLocation id) {
+    public static KeyedLetter byId(Identifier id) {
         return LETTER_MAP.getOrDefault(id, KeyedLetter.empty());
     }
 
-    @Deprecated
-    public static ResourceLocation getId(KeyedLetter letter) {
-        return LETTER_MAP.inverse().getOrDefault(letter, EmptyLetter.ID);
-    }
-
-    public static void forEach(BiConsumer<ResourceLocation, KeyedLetter> action) {
+    public static void forEach(BiConsumer<Identifier, KeyedLetter> action) {
         for (var id : ID_LIST) {
             action.accept(id, LETTER_MAP.get(id));
         }

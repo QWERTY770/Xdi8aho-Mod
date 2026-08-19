@@ -15,13 +15,16 @@ public class ModDataGen {
     public static BlockFamily REDWOOD_FAMILY = new
             BlockFamily.Builder(FireflyBlocks.CEDAR_PLANKS.get())
             .button(FireflyBlocks.CEDAR_BUTTON.get())
+            .door(FireflyBlocks.CEDAR_DOOR.get())
             .fence(FireflyBlocks.CEDAR_FENCE.get())
             .fenceGate(FireflyBlocks.CEDAR_FENCE_GATE.get())
+            .hangingSign(FireflyBlocks.CEDAR_HANGING_SIGN.get(), FireflyBlocks.CEDAR_WALL_HANGING_SIGN.get())
+            .log(FireflyBlocks.CEDAR_LOG.get())
             .pressurePlate(FireflyBlocks.CEDAR_PRESSURE_PLATE.get())
             .sign(FireflyBlocks.CEDAR_SIGN.get(), FireflyBlocks.CEDAR_WALL_SIGN.get())
             .slab(FireflyBlocks.CEDAR_SLAB.get())
             .stairs(FireflyBlocks.CEDAR_STAIRS.get())
-            .door(FireflyBlocks.CEDAR_DOOR.get())
+            .strippedLog(FireflyBlocks.STRIPPED_CEDAR_LOG.get())
             .trapdoor(FireflyBlocks.CEDAR_TRAPDOOR.get())
             .recipeGroupPrefix("wooden")
             .recipeUnlockedBy("has_planks")
@@ -51,7 +54,7 @@ public class ModDataGen {
         ImmutableList.Builder<Item> builder = ImmutableList.builder();
         builder.add(FireflyItems.CEDAR_BOAT.get());
         builder.add(FireflyItems.CEDAR_CHEST_BOAT.get());
-        builder.add(FireflyItems.CEDAR_HANGING_SIGN.get());
+        builder.add(FireflyItems.FIREFLY_SPAWN_EGG.get());
         builder.add(FireflyItems.INDIUM_AXE.get());
         builder.add(FireflyItems.INDIUM_CHISEL.get());
         builder.add(FireflyItems.INDIUM_HOE.get());
@@ -86,7 +89,6 @@ public class ModDataGen {
         builder.add(FireflyBlocks.STRIPPED_CEDAR_LOG.get());
         builder.add(FireflyBlocks.STRIPPED_CEDAR_WOOD.get());
         builder.add(FireflyBlocks.CEDAR_HANGING_SIGN.get());
-        builder.add(FireflyBlocks.CEDAR_WALL_HANGING_SIGN.get());
         builder.add(FireflyBlocks.XDI8_TABLE.get());
         builder.add(FireflyBlocks.XDI8AHO_PORTAL_TOP_BLOCK.get());
         return builder.build();

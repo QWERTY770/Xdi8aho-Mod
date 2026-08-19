@@ -1,7 +1,7 @@
 package top.xdi8.mod.firefly8.fabric;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.registry.FabricBrewingRecipeRegistryBuilder;
+import net.fabricmc.fabric.api.registry.FabricPotionBrewingBuilder;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import top.xdi8.mod.firefly8.Firefly8;
@@ -17,16 +17,14 @@ public class Firefly8Fabric implements ModInitializer {
     }
 
     private static void registerBrewingRecipes() {
-        FabricBrewingRecipeRegistryBuilder.BUILD.register(builder -> {
-                    try {
-                        builder.registerItemRecipe(
-                                Items.SPLASH_POTION,
-                                Ingredient.of(FireflyItemTags.TINTED_DRAGON_BREATH.entries()),
-                                Items.LINGERING_POTION);
-                    } catch (Exception e) {
-                        Firefly8.LOGGER.warn(e.toString());
-                    }
-                }
-        );
+        FabricPotionBrewingBuilder.BUILD.register(builder -> {
+            try {
+                builder.registerItemRecipe(Items.SPLASH_POTION,
+                        Ingredient.of(FireflyItemTags.TINTED_DRAGON_BREATH.entries()),
+                        Items.LINGERING_POTION);
+            } catch (Exception e) {
+                Firefly8.LOGGER.warn(e.toString());
+            }
+        });
     }
 }

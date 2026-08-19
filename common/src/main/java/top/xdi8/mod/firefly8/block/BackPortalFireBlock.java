@@ -6,6 +6,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.InsideBlockEffectApplier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -18,6 +19,7 @@ import net.minecraft.world.level.portal.TeleportTransition;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 import top.xdi8.mod.firefly8.world.FireflyTeleportHelper;
 
 public final class BackPortalFireBlock extends Block implements Portal {
@@ -63,7 +65,7 @@ public final class BackPortalFireBlock extends Block implements Portal {
     }
 
     @Override
-    public void entityInside(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Entity entity) {
+    public void entityInside(final @NonNull BlockState state, final Level level, final @NonNull BlockPos pos, final @NonNull Entity entity, final @NonNull InsideBlockEffectApplier effectApplier, final boolean isPrecise) {
         if (level.isClientSide()) return;
         BlockState downState = level.getBlockState(pos.below());
         if (!(downState.is(FireflyBlocks.XDI8AHO_BACK_PORTAL_CORE_BLOCK.get())) ||

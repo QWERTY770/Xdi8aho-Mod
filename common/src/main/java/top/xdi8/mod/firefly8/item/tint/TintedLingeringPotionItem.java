@@ -20,7 +20,6 @@ public class TintedLingeringPotionItem extends LingeringPotionItem {
         return stack.getComponents().getOrDefault(DataComponents.ITEM_NAME, Component.translatable("item.firefly8.tinted_lingering_potion"));
     }
 
-    @Override
     public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag tooltipFlag) {
         // NO-OP: YOU CANNOT SEE ANYTHING INSIDE
     }

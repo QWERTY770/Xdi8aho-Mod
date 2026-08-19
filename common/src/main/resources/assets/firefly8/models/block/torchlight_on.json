@@ -2,6 +2,9 @@
   "parent": "block/cube_column",
   "textures": {
     "end": "firefly8:block/golden_window",
-    "side": "firefly8:block/o2xtop_with_firefly"
+    "side": {
+      "sprite": "firefly8:block/o2xtop_with_firefly",
+      "force_translucent": true
+    }
   }
 }

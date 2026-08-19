@@ -1,6 +1,7 @@
 package top.xdi8.mod.firefly8.forge.datagen;
 
 import com.google.common.collect.Streams;
+import dev.architectury.registry.registries.RegistrySupplier;
 import io.github.qwerty770.mcmod.xdi8.registries.RegistryHelper;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
@@ -8,10 +9,11 @@ import net.minecraft.client.data.models.ModelProvider;
 import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.client.data.models.model.TexturedModel;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.FoliageColor;
@@ -36,17 +38,17 @@ public class ModModelProvider extends ModelProvider {
     @Override
     protected @NotNull Stream<? extends Holder<Block>> getKnownBlocks() {
         return Streams.stream(RegistryHelper.blockRegistry.iterator())
-                .filter((block -> block != FireflyBlocks.XDI8_TABLE
-                        && block != FireflyBlocks.XDI8AHO_BACK_FIRE_BLOCK
-                        && block != FireflyBlocks.XDI8AHO_PORTAL_BLOCK
-                        && block != FireflyBlocks.XDI8AHO_PORTAL_TOP_BLOCK));
+                .map(RegistrySupplier::asHolder)
+                .filter((block -> block != FireflyBlocks.XDI8_TABLE.asHolder()
+                        && block != FireflyBlocks.XDI8AHO_BACK_FIRE_BLOCK.asHolder()
+                        && block != FireflyBlocks.XDI8AHO_PORTAL_BLOCK.asHolder()
+                        && block != FireflyBlocks.XDI8AHO_PORTAL_TOP_BLOCK.asHolder()));
     }
 
     @Override
     protected void registerModels(@NotNull BlockModelGenerators blockModels, @NotNull ItemModelGenerators itemModels) {
         blockModels.family(FireflyBlocks.CEDAR_PLANKS.get()).generateFor(ModDataGen.REDWOOD_FAMILY);
         blockModels.family(FireflyBlocks.SYMBOL_STONE_BRICKS.get()).generateFor(ModDataGen.SYMBOL_STONE_FAMILY);
-        blockModels.createHangingSign(FireflyBlocks.STRIPPED_CEDAR_LOG.get(), FireflyBlocks.CEDAR_HANGING_SIGN.get(), FireflyBlocks.CEDAR_WALL_HANGING_SIGN.get());
         blockModels.createTintedLeaves(FireflyBlocks.CEDAR_LEAVES.get(), TexturedModel.LEAVES, FoliageColor.FOLIAGE_DEFAULT);
         blockModels.woodProvider(FireflyBlocks.CEDAR_LOG.get()).logWithHorizontal(FireflyBlocks.CEDAR_LOG.get()).wood(FireflyBlocks.CEDAR_WOOD.get());
         blockModels.woodProvider(FireflyBlocks.STRIPPED_CEDAR_LOG.get()).logWithHorizontal(FireflyBlocks.STRIPPED_CEDAR_LOG.get()).wood(FireflyBlocks.STRIPPED_CEDAR_WOOD.get());
@@ -55,7 +57,6 @@ public class ModModelProvider extends ModelProvider {
         LettersUtil.forEach((key, letter) -> blockModels.createTrivialBlock(
                 SymbolStoneBlock.fromLetter(letter), TexturedModel.createDefault(ModModelProvider::getSymbolStoneTexture, ModelTemplates.CUBE_ALL)));
 
-        itemModels.generateSpawnEgg(FireflyItems.FIREFLY_SPAWN_EGG.get(), 0x000000, 0x00f500);
         itemModels.generateFlatItem(FireflyItems.BUNDLER.get(), Items.BUNDLE, ModelTemplates.FLAT_ITEM);
         Item tinted_potion = FireflyItems.TINTED_POTION.get();
         itemModels.generateFlatItem(FireflyItems.TINTED_DRAGON_BREATH.get(), tinted_potion, ModelTemplates.FLAT_ITEM);
@@ -72,13 +73,13 @@ public class ModModelProvider extends ModelProvider {
 
     public static TextureMapping getSymbolStoneTexture(Block block1) {
         if (!(block1 instanceof SymbolStoneBlock block)) return cube(block1);
-        ResourceLocation resourceLocation = BuiltInRegistries.BLOCK.getKey(block);
+        Identifier identifier = BuiltInRegistries.BLOCK.getKey(block);
         if (block.letter() == DefaultXdi8Letters.LETTER_n){
-            return cube(resourceLocation.withPath("block/symbol_stones/symbol_stone_n_img"));
+            return cube(new Material(identifier.withPath("block/symbol_stones/symbol_stone_n_img")));
         }
         if (block.letter() == DefaultXdi8Letters.LETTER_s){
-            return cube(resourceLocation.withPath("block/symbol_stones/symbol_stone_s_img"));
+            return cube(new Material(identifier.withPath("block/symbol_stones/symbol_stone_s_img")));
         }
-        return cube(resourceLocation.withPrefix("block/symbol_stones/"));
+        return cube(new Material(identifier.withPrefix("block/symbol_stones/")));
     }
 }

@@ -1,13 +1,13 @@
 package top.xdi8.mod.firefly8.core.letters;
 
 import io.github.qwerty770.mcmod.xdi8.registries.ResourceLocationTool;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 final class EmptyLetter implements KeyedLetter {
-    static final ResourceLocation ID = ResourceLocationTool.create("firefly8", "none");
+    static final Identifier ID = ResourceLocationTool.create("firefly8", "none");
 
     @Override
-    public ResourceLocation id() {
+    public Identifier id() {
         return ID;
     }
 

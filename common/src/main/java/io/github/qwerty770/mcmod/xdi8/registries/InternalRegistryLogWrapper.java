@@ -1,16 +1,16 @@
 package io.github.qwerty770.mcmod.xdi8.registries;
 
 import com.mojang.logging.LogUtils;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.ApiStatus;
 import org.slf4j.Logger;
 
 @ApiStatus.Internal
 public class InternalRegistryLogWrapper implements Runnable {
-    private final ResourceLocation key;
+    private final Identifier key;
     private static final Logger LOGGER = LogUtils.getLogger();
 
-    protected InternalRegistryLogWrapper(ResourceLocation key) {
+    protected InternalRegistryLogWrapper(Identifier key) {
         this.key = key;
     }
 

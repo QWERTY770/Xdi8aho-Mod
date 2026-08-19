@@ -4,13 +4,13 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.qwerty770.mcmod.xdi8.registries.ResourceLocationTool;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
@@ -41,7 +41,7 @@ public class SymbolStoneProductionRecipe implements Recipe<SingleRecipeInput> {
         this.weight = weight;
     }
 
-    public SymbolStoneProductionRecipe(ResourceLocation location, List<WeightEntry> weight) {
+    public SymbolStoneProductionRecipe(Identifier location, List<WeightEntry> weight) {
         this(LettersUtil.byId(location), weight);
     }
 
@@ -51,17 +51,27 @@ public class SymbolStoneProductionRecipe implements Recipe<SingleRecipeInput> {
     }
 
     @Override
-    public @NotNull ItemStack assemble(SingleRecipeInput input, HolderLookup.Provider registries) {
-        ResourceLocation letterId = letter.id();
-        ResourceLocation itemId = ResourceLocationTool.create(letterId.getNamespace(), "symbol_stone_" + letterId.getPath());
+    public @NotNull ItemStack assemble(SingleRecipeInput input) {
+        Identifier letterId = letter.id();
+        Identifier itemId = ResourceLocationTool.create(letterId.getNamespace(), "symbol_stone_" + letterId.getPath());
         try {
             // Use HolderLookup here in 1.21+
-            return new ItemStack(registries.lookup(Registries.ITEM).map((registry) -> registry.get(ResourceKey.create(Registries.ITEM, itemId)).orElseThrow()).orElseThrow());
+            return new ItemStack(BuiltInRegistries.ITEM.getOptional(ResourceKey.create(Registries.ITEM, itemId)).orElseThrow());
         } catch (NoSuchElementException exception) {
             // Return the dark symbol stone as default, that's interesting
             Firefly8.LOGGER.error(exception.toString());
             return new ItemStack(FireflyItems.DARK_SYMBOL_STONE.get());
         }
+    }
+
+    @Override
+    public boolean showNotification() {
+        return true;
+    }
+
+    @Override
+    public @NotNull String group() {
+        return Firefly8.MODID;
     }
 
     @Override
@@ -87,26 +97,15 @@ public class SymbolStoneProductionRecipe implements Recipe<SingleRecipeInput> {
         return FireflyRecipes.PRODUCE_CATEGORY.get();
     }
 
-    public static class Serializer implements RecipeSerializer<SymbolStoneProductionRecipe> {
-        private static final MapCodec<SymbolStoneProductionRecipe> CODEC = RecordCodecBuilder.mapCodec((instance) ->
-                instance.group(ResourceLocation.CODEC.fieldOf("letter").forGetter((recipe) -> recipe.letter.id()),
+    public static final MapCodec<SymbolStoneProductionRecipe> CODEC = RecordCodecBuilder.mapCodec((instance) ->
+                instance.group(Identifier.CODEC.fieldOf("letter").forGetter((recipe) -> recipe.letter.id()),
                                 WeightEntry.CODEC.listOf().fieldOf("weight").forGetter((recipe) -> recipe.weight))
                         .apply(instance, SymbolStoneProductionRecipe::new));
-        private static final StreamCodec<RegistryFriendlyByteBuf, SymbolStoneProductionRecipe> STREAM_CODEC =
-                StreamCodec.composite(ResourceLocation.STREAM_CODEC, (recipe) -> recipe.letter.id(),
+    public static final StreamCodec<RegistryFriendlyByteBuf, SymbolStoneProductionRecipe> STREAM_CODEC =
+            StreamCodec.composite(Identifier.STREAM_CODEC, (recipe) -> recipe.letter.id(),
                         WeightEntry.STREAM_CODEC.apply(ByteBufCodecs.list()), (recipe) -> recipe.weight,
                         SymbolStoneProductionRecipe::new);
-
-        @Override
-        public @NotNull MapCodec<SymbolStoneProductionRecipe> codec() {
-            return CODEC;
-        }
-
-        @Override
-        public @NotNull StreamCodec<RegistryFriendlyByteBuf, SymbolStoneProductionRecipe> streamCodec() {
-            return STREAM_CODEC;
-        }
-    }
+    public static final RecipeSerializer<SymbolStoneProductionRecipe> SERIALIZER = new RecipeSerializer<>(CODEC, STREAM_CODEC);
 
     public record WeightEntry(TagKey<Block> tag, double weight) {
         public static final Codec<WeightEntry> CODEC = RecordCodecBuilder.create((instance) ->

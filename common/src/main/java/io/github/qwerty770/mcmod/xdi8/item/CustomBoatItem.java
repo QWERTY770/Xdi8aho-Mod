@@ -6,13 +6,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySelector;
-import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.vehicle.AbstractBoat;
-import net.minecraft.world.entity.vehicle.Boat;
+import net.minecraft.world.entity.vehicle.boat.AbstractBoat;
 import net.minecraft.world.item.BoatItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
@@ -22,6 +18,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -31,12 +28,12 @@ public class CustomBoatItem<T extends AbstractBoat> extends BoatItem {
     private final Supplier<EntityType<T>> entityTypeSupplier;
 
     public CustomBoatItem(RegistrySupplier<EntityType<T>> supplier, Properties properties) {
-        super(EntityType.CHERRY_BOAT, properties);  // only a placeholder
+        super(EntityTypes.CHERRY_BOAT, properties);  // only a placeholder
         this.entityTypeSupplier = supplier;
     }
 
     @Override
-    public InteractionResult use(Level level, Player player, InteractionHand hand) {
+    public @NonNull InteractionResult use(@NonNull Level level, Player player, @NonNull InteractionHand hand) {
         ItemStack itemStack = player.getItemInHand(hand);
         HitResult hitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.ANY);
         if (hitResult.getType() == HitResult.Type.MISS) {
@@ -49,7 +46,7 @@ public class CustomBoatItem<T extends AbstractBoat> extends BoatItem {
                 Vec3 vec32 = player.getEyePosition();
 
                 for (Entity entity : list) {
-                    AABB aABB = entity.getBoundingBox().inflate((double)entity.getPickRadius());
+                    AABB aABB = entity.getBoundingBox().inflate(entity.getPickRadius());
                     if (aABB.contains(vec32)) {
                         return InteractionResult.PASS;
                     }
@@ -64,7 +61,7 @@ public class CustomBoatItem<T extends AbstractBoat> extends BoatItem {
                     if (!level.noCollision(abstractBoat, abstractBoat.getBoundingBox())) {
                         return InteractionResult.FAIL;
                     } else {
-                        if (!level.isClientSide) {
+                        if (!level.isClientSide()) {
                             level.addFreshEntity(abstractBoat);
                             level.gameEvent(player, GameEvent.ENTITY_PLACE, hitResult.getLocation());
                             itemStack.consume(1, player);
@@ -87,7 +84,7 @@ public class CustomBoatItem<T extends AbstractBoat> extends BoatItem {
             Vec3 vec3 = hitResult.getLocation();
             abstractBoat.setInitialPos(vec3.x, vec3.y, vec3.z);
             if (level instanceof ServerLevel serverLevel) {
-                EntityType.createDefaultStackConfig(serverLevel, stack, player).accept(abstractBoat);
+                EntityType.createDefaultStackConfig(serverLevel, stack, player).apply(abstractBoat);
             }
         }
 

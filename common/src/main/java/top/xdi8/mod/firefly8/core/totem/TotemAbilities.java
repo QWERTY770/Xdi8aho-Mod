@@ -3,20 +3,20 @@ package top.xdi8.mod.firefly8.core.totem;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import io.github.qwerty770.mcmod.xdi8.registries.ResourceLocationTool;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.ApiStatus;
 import top.xdi8.mod.firefly8.core.letters.event.Xdi8RegistryEvents;
 
 import java.util.Optional;
 
 public final class TotemAbilities {
-    private static final BiMap<ResourceLocation, TotemAbility> MAP = HashBiMap.create();
+    private static final BiMap<Identifier, TotemAbility> MAP = HashBiMap.create();
 
-    public static Optional<TotemAbility> byId(ResourceLocation id) {
+    public static Optional<TotemAbility> byId(Identifier id) {
         return Optional.ofNullable(MAP.get(id));
     }
 
-    public static Optional<ResourceLocation> getId(TotemAbility ability) {
+    public static Optional<Identifier> getId(TotemAbility ability) {
         return Optional.ofNullable(MAP.inverse().get(ability));
     }
 

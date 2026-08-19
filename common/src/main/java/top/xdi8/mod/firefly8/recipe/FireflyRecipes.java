@@ -20,9 +20,9 @@ public class FireflyRecipes {
             recipeBookCategory(TOTEM);
     // Recipe Serializer
     public static final RegistrySupplier<RecipeSerializer<SymbolStoneProductionRecipe>> PRODUCE_SERIALIZER =
-            recipeSerializer(PRODUCE, SymbolStoneProductionRecipe.Serializer::new);
+            recipeSerializer(PRODUCE, () -> SymbolStoneProductionRecipe.SERIALIZER);
     public static final RegistrySupplier<RecipeSerializer<TotemRecipe>> TOTEM_SERIALIZER =
-            recipeSerializer(TOTEM, TotemRecipe.Serializer::new);
+            recipeSerializer(TOTEM, () -> TotemRecipe.SERIALIZER);
     // Recipe Type
     public static final RegistrySupplier<RecipeType<SymbolStoneProductionRecipe>> PRODUCE_TYPE = recipeType(PRODUCE);
     public static final RegistrySupplier<RecipeType<TotemRecipe>> TOTEM_TYPE = recipeType(TOTEM);

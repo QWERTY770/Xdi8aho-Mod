@@ -25,7 +25,7 @@ public final class FireflyCommands {
         if (selection != Commands.CommandSelection.ALL) return;
         LiteralArgumentBuilder<CommandSourceStack> command =
                 Commands.literal("bindxdi8portal")
-                        .requires((CommandSourceStack src) -> src.hasPermission(2))
+                        .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
                         .then(Commands.argument("pos", BlockPosArgument.blockPos())
                                 .executes(BindXdi8PortalCommand::init0)
                                 .then(Commands.literal("for")
@@ -45,7 +45,7 @@ public final class FireflyCommands {
                         );
         dispatcher.register(command);
         command = Commands.literal("unbindxdi8portal")
-                .requires((CommandSourceStack src) -> src.hasPermission(2))
+                .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
                 .executes(UnbindXdi8PortalCommand::unbind1)
                 .then(Commands.argument("players", EntityArgument.players())
                         .executes(UnbindXdi8PortalCommand::unbind0)
@@ -93,7 +93,7 @@ public final class FireflyCommands {
                 stack.sendSuccess(() -> Component.translatable("commands.bindxdi8portal.success", player.getDisplayName()), true);
                 return 1;
             //} else {
-            //    stack.sendFailure(Component.translatable("commands.bindxdi8portal.failure", player.getDisplayName(), level.location(), pos.toShortString()));
+            //    stack.sendFailure(Component.translatable("commands.bindxdi8portal.failure", player.getDisplayName(), level.identifier(), pos.toShortString()));
             //    return 0;
             //}
         }

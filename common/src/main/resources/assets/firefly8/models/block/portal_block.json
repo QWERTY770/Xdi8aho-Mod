@@ -33,6 +33,7 @@
     }
   ],
   "textures": {
+    "particle": "firefly8:block/xdi8aho_portal",
     "side": "firefly8:block/xdi8aho_portal"
   }
 }

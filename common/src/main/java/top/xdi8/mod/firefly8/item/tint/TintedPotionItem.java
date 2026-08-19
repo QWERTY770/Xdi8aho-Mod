@@ -1,6 +1,6 @@
 package top.xdi8.mod.firefly8.item.tint;
 
-import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.advancements.triggers.CriteriaTriggers;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -9,10 +9,7 @@ import net.minecraft.stats.Stats;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.PotionItem;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
@@ -33,12 +30,12 @@ public class TintedPotionItem extends PotionItem {
             CriteriaTriggers.CONSUME_ITEM.trigger((ServerPlayer) player, pStack);
         }
 
-        if (!pLevel.isClientSide) {
+        if (!pLevel.isClientSide()) {
             PotionContents contents = pStack.get(DataComponents.POTION_CONTENTS);
             if (contents == null) return pStack;
             for (MobEffectInstance mobeffectinstance : contents.getAllEffects()) {
-                if (mobeffectinstance.getEffect().value().isInstantenous()) {
-                    mobeffectinstance.getEffect().value().applyInstantenousEffect((ServerLevel) pLevel, player, player, pEntityLiving, mobeffectinstance.getAmplifier(), 1.0D);
+                if (mobeffectinstance.getEffect().value().isInstantaneous()) {
+                    mobeffectinstance.getEffect().value().applyInstantaneousEffect((ServerLevel) pLevel, player, player, pEntityLiving, mobeffectinstance.getAmplifier(), 1.0D);
                 } else {
                     pEntityLiving.addEffect(new MobEffectInstance(mobeffectinstance));
                 }
@@ -72,7 +69,6 @@ public class TintedPotionItem extends PotionItem {
         return stack.getComponents().getOrDefault(DataComponents.ITEM_NAME, Component.translatable("item.firefly8.tinted_glass_bottle"));
     }
 
-    @Override
     public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag tooltipFlag) {
         // NO-OP: YOU CANNOT SEE ANYTHING INSIDE
     }

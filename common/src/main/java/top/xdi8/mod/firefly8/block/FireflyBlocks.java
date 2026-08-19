@@ -37,7 +37,6 @@ import static top.xdi8.mod.firefly8.block.Xdi8ahoPortalTopBlock.FIREFLY_COUNT;
 
 public class FireflyBlocks {
     public static final InternalRegistryLogWrapper LOG_WRAPPER = InternalRegistryLogWrapper.firefly8("blocks");
-    // TODO: rename cedar -> redwood
     public static final MapColor redwoodColor = MapColor.COLOR_RED;
     public static final BlockSetType redwoodSet = BlockSetType.register(new BlockSetType("xdi8_redwood"));
     public static final WoodType redwoodType = WoodType.register(new WoodType("xdi8_redwood", redwoodSet));
@@ -107,9 +106,9 @@ public class FireflyBlocks {
         XDI8AHO_PORTAL_BLOCK = block("xdi8aho_portal", Xdi8ahoPortalBlock::new,
                 BlockBehaviour.Properties.of()
                         .mapColor(MapColor.GOLD)
-                        .lightLevel(s -> 11)
+                        .lightLevel(_ -> 11)
                         .strength(-1)
-                        .noCollission()
+                        .noCollision()
                         .sound(SoundType.AMETHYST));
         XDI8AHO_BACK_PORTAL_CORE_BLOCK = block("xdi8aho_back_portal_core", BackPortalCoreBlock::new,
                 BlockBehaviour.Properties.of()
@@ -121,9 +120,9 @@ public class FireflyBlocks {
                         .mapColor(MapColor.FIRE)
                         .replaceable()
                         .instabreak()
-                        .noCollission()
+                        .noCollision()
                         .sound(SoundType.WOOL)
-                        .lightLevel((bs) -> 15));
+                        .lightLevel(_ -> 15));
         XDI8_TABLE = block("xdi8_table", Xdi8TableBlock::new,
                 BlockBehaviour.Properties.of()
                         .mapColor(MapColor.GOLD)
@@ -167,7 +166,7 @@ public class FireflyBlocks {
         CEDAR_BUTTON = block("cedar_button",
                 (properties) -> new ButtonBlock(redwoodSet, 30, properties),
                 BlockBehaviour.Properties.of()
-                        .noCollission()
+                        .noCollision()
                         .strength(0.5F)
                         .pushReaction(PushReaction.DESTROY)
                         .sound(SoundType.WOOD));
@@ -191,7 +190,7 @@ public class FireflyBlocks {
                         return createTickerHelper(blockEntityType, FireflyBlockEntityTypes.REDWOOD_HANGING_SIGN.get(), SignBlockEntity::tick);
                     }
                 },
-                woodenBlock().forceSolidOn().noCollission().strength(1.0F));
+                woodenBlock().forceSolidOn().noCollision().strength(1.0F));
         CEDAR_LEAVES = createLeaves("cedar_leaves");
         CEDAR_LOG = block("cedar_log", RotatedPillarBlock::new,
                 woodenBlock().mapColor((blockState) -> blockState.getValue(RotatedPillarBlock.AXIS) == Direction.Axis.Y ?
@@ -200,13 +199,13 @@ public class FireflyBlocks {
                 woodenBlock().strength(2.0F, 3.0F));
         CEDAR_PRESSURE_PLATE = block("cedar_pressure_plate",
                 (properties) -> new PressurePlateBlock(redwoodSet, properties),
-                woodenBlock().forceSolidOn().noCollission().strength(0.5f).pushReaction(PushReaction.DESTROY));
+                woodenBlock().forceSolidOn().noCollision().strength(0.5f).pushReaction(PushReaction.DESTROY));
         CEDAR_SAPLING = block("cedar_sapling",
                 (properties) -> new SaplingBlock(FireflyTreeFeatures.CEDAR_TREE_GROWER.get(), properties),
                 BlockBehaviour.Properties.of()
                         .mapColor(MapColor.PLANT)
                         .instabreak()
-                        .noCollission()
+                        .noCollision()
                         .randomTicks()
                         .pushReaction(PushReaction.DESTROY)
                         .sound(SoundType.GRASS));
@@ -222,7 +221,7 @@ public class FireflyBlocks {
                         return createTickerHelper(blockEntityType, FireflyBlockEntityTypes.REDWOOD_SIGN.get(), SignBlockEntity::tick);
                     }
                 },
-                woodenBlock().forceSolidOn().noCollission().strength(1.0F));
+                woodenBlock().forceSolidOn().noCollision().strength(1.0F));
         CEDAR_SLAB = block("cedar_slab", SlabBlock::new,
                 woodenBlock().strength(2.0F, 3.0F));
         CEDAR_STAIRS = block("cedar_stairs",
@@ -243,7 +242,7 @@ public class FireflyBlocks {
                         return createTickerHelper(blockEntityType, FireflyBlockEntityTypes.REDWOOD_HANGING_SIGN.get(), SignBlockEntity::tick);
                     }
                 },
-                woodenBlock().forceSolidOn().noCollission().strength(1.0F));
+                woodenBlock().forceSolidOn().noCollision().strength(1.0F));
         CEDAR_WALL_SIGN = block("cedar_wall_sign",
                 (properties) -> new WallSignBlock(redwoodType, properties) {
                     @Override
@@ -259,7 +258,7 @@ public class FireflyBlocks {
                 woodenBlock().overrideLootTable(Optional.of(ResourceKey.create(Registries.LOOT_TABLE, ResourceLocationTool.create("firefly8:block/cedar_sign"))))
                         .overrideDescription("block.firefly8.cedar_sign")
                         .forceSolidOn()
-                        .noCollission()
+                        .noCollision()
                         .strength(1.0F));
         CEDAR_WOOD = block("cedar_wood", RotatedPillarBlock::new,
                 woodenBlock().strength(2.0F));

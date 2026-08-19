@@ -20,19 +20,19 @@ public class BrewingStandBlockEntityMixin {
     @Inject(method = "isBrewable", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/alchemy/PotionBrewing;hasMix(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/item/ItemStack;)Z"),
             cancellable = true)
     private static void isBrewable(PotionBrewing potionBrewing, NonNullList<ItemStack> items, CallbackInfoReturnable<Boolean> cir,
-                                   @Local(ordinal = 0) ItemStack ingredient, @Local(ordinal = 1) ItemStack input) {
-        if (!input.isEmpty() && TintedPotionBrewingRecipe.isInput(input) &&
-                potionBrewing.hasMix(ItemTinting.unTint(input), ingredient)) {
+                                   @Local(name = "ingredient") ItemStack ingredient, @Local(name = "itemStack") ItemStack itemStack) {
+        if (!itemStack.isEmpty() && TintedPotionBrewingRecipe.isInput(itemStack) &&
+                potionBrewing.hasMix(ItemTinting.unTint(itemStack), ingredient)) {
             cir.setReturnValue(true);
         }
     }
 
     @Inject(method = "doBrew", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/alchemy/PotionBrewing;mix(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/item/ItemStack;)Lnet/minecraft/world/item/ItemStack;"))
     private static void doBrew(Level level, BlockPos pos, NonNullList<ItemStack> items, CallbackInfo ci,
-                               @Local(ordinal = 0) ItemStack ingredient, @Local int i) {
-        ItemStack input = items.get(i);
+                               @Local(name = "ingredient") ItemStack ingredient, @Local(name = "dest") int dest) {
+        ItemStack input = items.get(dest);
         if (TintedPotionBrewingRecipe.isInput(input)) {
-            items.set(i, ItemTinting.tint(level.potionBrewing().mix(ingredient, ItemTinting.unTint(input))));
+            items.set(dest, ItemTinting.tint(level.potionBrewing().mix(ingredient, ItemTinting.unTint(input))));
         }
     }
 }

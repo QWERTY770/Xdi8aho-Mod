@@ -14,10 +14,9 @@ public class IndiumHoeItem extends HoeItem {
     }
 
     @Override
-    public boolean hurtEnemy(@NotNull ItemStack pStack, @NotNull LivingEntity pTarget, @NotNull LivingEntity pAttacker) {
-        if (!super.hurtEnemy(pStack, pTarget, pAttacker)) return false;
+    public void hurtEnemy(@NotNull ItemStack pStack, @NotNull LivingEntity pTarget, @NotNull LivingEntity pAttacker) {
+        super.hurtEnemy(pStack, pTarget, pAttacker);
         IndiumToolMaterial.dropNuggets(pStack, pTarget, pAttacker);
-        return true;
     }
 
     @Override

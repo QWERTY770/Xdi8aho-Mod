@@ -67,7 +67,7 @@ public class FireflyTeleportHelper {
         if (!serverLevel.getBlockState(newBlockPos).isAir()) serverLevel.setBlockAndUpdate(newBlockPos, Blocks.AIR.defaultBlockState());
         if (!serverLevel.getBlockState(newBlockPos.above()).isAir()) serverLevel.setBlockAndUpdate(newBlockPos.above(), Blocks.AIR.defaultBlockState());
         return new TeleportTransition(serverLevel2,
-                newBlockPos.getBottomCenter(),
+                Vec3.atCenterOf(newBlockPos),
                 Vec3.ZERO, 0.0F, 0.0F,
                 Relative.union(Relative.DELTA, Relative.ROTATION), postTeleportTransition);
     }
@@ -83,7 +83,7 @@ public class FireflyTeleportHelper {
         TeleportTransition.PostTeleportTransition postTeleportTransition = TeleportTransition.PLAY_PORTAL_SOUND.then(TeleportTransition.PLACE_PORTAL_TICKET);
         if (optional.isPresent()) {
             return new TeleportTransition(serverLevel2,
-                    findSpaceNearXdi8ahoPortal(optional.get().above(), serverLevel2).getBottomCenter(),
+                    Vec3.atCenterOf(findSpaceNearXdi8ahoPortal(optional.get().above(), serverLevel2)),
                     Vec3.ZERO, 0.0F, 0.0F,
                     Relative.union(Relative.DELTA, Relative.ROTATION), postTeleportTransition);
         } else {
@@ -91,7 +91,7 @@ public class FireflyTeleportHelper {
                 return player.findRespawnPositionAndUseSpawnBlock(false, TeleportTransition.DO_NOTHING);
             } else {
                 return new TeleportTransition(serverLevel2,
-                        serverLevel2.getSharedSpawnPos().getBottomCenter(),
+                        Vec3.atBottomCenterOf(serverLevel2.getRespawnData().pos()),
                         Vec3.ZERO, 0.0F, 0.0F,
                         Relative.union(Relative.DELTA, Relative.ROTATION), postTeleportTransition);
             }

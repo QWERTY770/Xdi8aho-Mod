@@ -4,11 +4,9 @@ import dev.architectury.registry.registries.RegistrySupplier;
 import io.github.qwerty770.mcmod.xdi8.annotation.StableApi;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.FlowerPotBlock;
-import net.minecraft.world.level.block.LeavesBlock;
-import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
@@ -24,7 +22,7 @@ public class BlockUtils {
     }
 
     public static RegistrySupplier<Block> createLeaves(String id) {
-        return RegistryHelper.block(id, LeavesBlock::new,
+        return RegistryHelper.block(id, p -> new TintedParticleLeavesBlock(0.01F, p),
                 BlockBehaviour.Properties.of()
                         .mapColor(MapColor.PLANT)
                         .strength(0.2f)
@@ -45,7 +43,7 @@ public class BlockUtils {
 
     // private methods from net.minecraft.world.level.block.Blocks
     private static Boolean ocelotOrParrot(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, EntityType<?> entityType) {
-        return entityType == EntityType.OCELOT || entityType == EntityType.PARROT;
+        return entityType == EntityTypes.OCELOT || entityType == EntityTypes.PARROT;
     }
 
     private static Boolean never(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos) {

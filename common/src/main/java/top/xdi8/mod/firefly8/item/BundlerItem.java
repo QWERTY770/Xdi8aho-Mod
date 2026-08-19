@@ -8,6 +8,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class BundlerItem extends Item {
@@ -15,8 +16,9 @@ public class BundlerItem extends Item {
         super(properties);
     }
 
-    protected List<ItemStack> readItemsInside(@NotNull ItemStack stack) {
-        return stack.get(FireflyDataComponentTypes.STORED_ITEMS.get());
+    protected @NotNull List<ItemStack> readItemsInside(@NotNull ItemStack stack) {
+        List<ItemStack> list = stack.get(FireflyDataComponentTypes.STORED_ITEMS.get());
+        return list != null ? list : new ArrayList<>();
     }
 
     @Override

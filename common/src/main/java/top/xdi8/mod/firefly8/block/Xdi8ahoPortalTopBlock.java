@@ -15,6 +15,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -116,12 +117,10 @@ public class Xdi8ahoPortalTopBlock extends BaseEntityBlock {
     }
 
     @Override
-    public void onRemove(@NotNull BlockState state, @NotNull Level level,
-                         @NotNull BlockPos pos, @NotNull BlockState newState, boolean isMoving) {
-        // invalid portal
-        if (!newState.is(state.getBlock())) {
-            removePortal(level, pos);
-        }
+    protected void affectNeighborsAfterRemoval(@NotNull BlockState state, @NotNull ServerLevel level,
+                                               @NotNull BlockPos pos, boolean isMoving) {
+        super.affectNeighborsAfterRemoval(state, level, pos, isMoving);
+        removePortal(level, pos);
     }
 
     public static void removePortal(@NotNull Level level, @NotNull BlockPos pos) {
@@ -141,7 +140,7 @@ public class Xdi8ahoPortalTopBlock extends BaseEntityBlock {
 
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level, @NotNull BlockState state, @NotNull BlockEntityType<T> type) {
-        return level.isClientSide ? null : createTickerHelper(type, FireflyBlockEntityTypes.PORTAL_TOP.get(), ITickable::iTick);
+        return level.isClientSide() ? null : createTickerHelper(type, FireflyBlockEntityTypes.PORTAL_TOP.get(), ITickable::iTick);
     }
 
     @Override

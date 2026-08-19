@@ -5,7 +5,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvents;
@@ -50,7 +49,7 @@ public class TintedFireflyBottleItem extends Item {
             stack.applyComponents(DataComponentMap.builder().set(FIREFLIES, CustomData.of(tag)).build());
         }
         CompoundTag fireflyTag = Objects.requireNonNull(stack.get(FIREFLIES)).copyTag();
-        return fireflyTag.getList("Fireflies", Tag.TAG_COMPOUND);
+        return fireflyTag.getList("Fireflies").orElse(new ListTag());
     }
 
     @Override
@@ -71,7 +70,7 @@ public class TintedFireflyBottleItem extends Item {
         ListTag fireflyList = getFireflies(stack);
         final int prevCount = fireflyList.size();
         if (prevCount >= MAX_FIREFLY_COUNT) {
-            player.displayClientMessage(Component.translatable("item.firefly8.tinted_firefly_bottle.too_many"), true);
+            player.sendSystemMessage(Component.translatable("item.firefly8.tinted_firefly_bottle.too_many"));
             return false;
         } else {
             firefly.unRide();
@@ -117,7 +116,7 @@ public class TintedFireflyBottleItem extends Item {
                 return InteractionResult.SUCCESS.heldItemTransformedTo(newStack);
             }
             if (res.right().isPresent() && !level.isClientSide()) {
-                res.ifRight(c -> player.displayClientMessage(c, true));
+                res.ifRight(player::sendSystemMessage);
             }
             return InteractionResult.FAIL;
         } else return InteractionResult.PASS;
@@ -126,7 +125,7 @@ public class TintedFireflyBottleItem extends Item {
     public static boolean removeFirefly(ItemStack stack) {
         var fireflyData = stack.get(FireflyDataComponentTypes.FIREFLIES.get());
         if (fireflyData == null) return false;
-        ListTag fireflyList = fireflyData.copyTag().getList("Fireflies", Tag.TAG_COMPOUND);
+        ListTag fireflyList = fireflyData.copyTag().getList("Fireflies").orElse(new ListTag());
         if (fireflyList.isEmpty()) return false;
         fireflyList.removeLast();
         return true;
@@ -145,12 +144,12 @@ public class TintedFireflyBottleItem extends Item {
             player.setItemInHand(hand, new ItemStack(FireflyItems.TINTED_GLASS_BOTTLE.get()));
             return Either.right(Component.translatable("item.firefly8.tinted_firefly_bottle.empty"));
         }
-        CompoundTag fireflyTag = fireflyList.getCompound(fireflyList.size() - 1);
+        CompoundTag fireflyTag = fireflyList.getCompound(fireflyList.size() - 1).orElse(new CompoundTag());
         FireflyEntity fireflyEntity = FireflyEntity.create(level);
-        fireflyEntity.moveTo(spawnPos);
+        fireflyEntity.setPos(spawnPos);
 
         FireflyEntityData.loadFromTag(fireflyEntity, fireflyTag);
-        final long inBottleTime = fireflyTag.getLong("InBottleTime");
+        final long inBottleTime = fireflyTag.getLongOr("InBottleTime", 0L);
         final long outOfBottleTime = level.getGameTime();
         if (outOfBottleTime - inBottleTime >= FireflyEntityData.CHARGE_TIME) { // 20min
             fireflyEntity.addOwnerUUID(outOfBottleTime, player.getUUID());

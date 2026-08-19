@@ -11,7 +11,7 @@
     "minecraft:podzol",
     "minecraft:suspicious_gravel",
     "minecraft:rooted_dirt",
-    "#minecraft:concrete_powder",
+    "#minecraft:concrete_powders",
     "#minecraft:sand"
   ]
 }

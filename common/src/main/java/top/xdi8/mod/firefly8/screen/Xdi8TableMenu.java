@@ -131,7 +131,7 @@ public class Xdi8TableMenu extends AbstractContainerMenu {
         if (recipeHolder.isPresent()) {
             this.totemRecipe = recipeHolder.get();
             final TotemRecipe totemRecipe = this.totemRecipe.value();
-            final ItemStack assemble = totemRecipe.assemble(input, this.level.registryAccess());
+            final ItemStack assemble = totemRecipe.assemble(input);
             container.setItem(0, assemble);
             for (int i = 1; i < 5; i++)
                 container.getItem(i).shrink(1);

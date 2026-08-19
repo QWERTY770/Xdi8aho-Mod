@@ -4,6 +4,8 @@ import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import java.util.UUID;
 
@@ -22,13 +24,13 @@ public final class FireflyEntityData {
     }
 
     public static void loadFromTag(FireflyEntity firefly, CompoundTag tag) {
-        if (tag.contains("NoAi", Tag.TAG_BYTE)) firefly.setNoAi(tag.getBoolean("NoAi"));
-        if (tag.contains("Silent")) firefly.setSilent(tag.getBoolean("Silent"));
-        if (tag.contains("NoGravity")) firefly.setNoGravity(tag.getBoolean("NoGravity"));
-        if (tag.contains("Glowing")) firefly.setGlowingTag(tag.getBoolean("Glowing"));
-        if (tag.contains("Invulnerable", Tag.TAG_BYTE)) firefly.setInvulnerable(tag.getBoolean("Invulnerable"));
-        if (tag.contains("OwnerData", Tag.TAG_LIST))
-            deserializeOwners(firefly.getOwnerMap(), tag.getList("OwnerData", Tag.TAG_COMPOUND));
+        if (tag.contains("NoAi")) firefly.setNoAi(tag.getBooleanOr("NoAi", false));
+        if (tag.contains("Silent")) firefly.setSilent(tag.getBooleanOr("Silent", false));
+        if (tag.contains("NoGravity")) firefly.setNoGravity(tag.getBooleanOr("NoGravity", false));
+        if (tag.contains("Glowing")) firefly.setGlowingTag(tag.getBooleanOr("Glowing", false));
+        if (tag.contains("Invulnerable")) firefly.setInvulnerable(tag.getBooleanOr("Invulnerable", false));
+        if (tag.contains("OwnerData"))
+            deserializeOwners(firefly.getOwnerMap(), tag.getList("OwnerData").orElse(new ListTag()));
     }
 
     static ListTag serializeOwners(Object2LongMap<UUID> ownerMap) {
@@ -36,20 +38,35 @@ public final class FireflyEntityData {
         ownerMap.forEach((uuid, outOfBottleTime) -> {
             CompoundTag tag = new CompoundTag();
             root.add(tag);
-            tag.putUUID("OwnerID", uuid);
+            tag.putString("OwnerID", uuid.toString());
             tag.putLong("ReleaseTime", outOfBottleTime);
         });
         return root;
     }
 
+    static void serializeOwners(ValueOutput.ValueOutputList root, Object2LongMap<UUID> ownerMap) {
+        ownerMap.forEach((uuid, outOfBottleTime) -> {
+            ValueOutput entry = root.addChild();
+            entry.putString("OwnerID", uuid.toString());
+            entry.putLong("ReleaseTime", outOfBottleTime);
+        });
+    }
+
     static void deserializeOwners(Object2LongMap<UUID> ownerMap, ListTag root) {
-        if (root.getElementType() == Tag.TAG_COMPOUND) {
+        if (!root.isEmpty() && root.getFirst().getId() == Tag.TAG_COMPOUND) {
             for (Tag t : root) {
                 CompoundTag tag = (CompoundTag) t;
-                UUID uuid = tag.getUUID("OwnerID");
-                long releaseTime = tag.getLong("ReleaseTime");
+                UUID uuid = UUID.fromString(tag.getString("OwnerID").orElse(""));
+                long releaseTime = tag.getLongOr("ReleaseTime", 0L);
                 ownerMap.put(uuid, releaseTime);
             }
+        }
+    }
+
+    static void deserializeOwners(Object2LongMap<UUID> ownerMap, ValueInput.ValueInputList root) {
+        for (ValueInput entry : root) {
+            entry.getString("OwnerID").map(UUID::fromString)
+                    .ifPresent(uuid -> ownerMap.put(uuid, entry.getLongOr("ReleaseTime", 0L)));
         }
     }
 

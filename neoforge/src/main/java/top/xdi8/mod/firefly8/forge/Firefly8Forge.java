@@ -18,7 +18,7 @@ public class Firefly8Forge {
         Firefly8.init();
     }
 
-    @EventBusSubscriber(modid = "firefly8", bus = EventBusSubscriber.Bus.MOD)
+    @EventBusSubscriber(modid = "firefly8")
     public static final class Firefly8ModEvents {
         @SubscribeEvent
         public static void onCommonSetup(FMLCommonSetupEvent event) {
@@ -35,7 +35,7 @@ public class Firefly8Forge {
         }
     }
 
-    @EventBusSubscriber(modid = "firefly8", bus = EventBusSubscriber.Bus.GAME)
+    @EventBusSubscriber(modid = "firefly8")
     public static final class Firefly8GameEvents {
         @SubscribeEvent
         public static void registerBrewingRecipes(RegisterBrewingRecipesEvent event){

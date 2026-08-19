@@ -172,6 +172,7 @@
       "xz_scale": 1.0,
       "y_scale": 1.0
     },
+    "preliminary_surface_level": 0.0,
     "ridges": "minecraft:overworld/ridges",
     "temperature": {
       "type": "minecraft:shifted_noise",

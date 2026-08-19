@@ -1,10 +1,6 @@
 package top.xdi8.mod.firefly8.block.symbol;
 
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
@@ -15,7 +11,8 @@ import top.xdi8.mod.firefly8.Firefly8;
 import top.xdi8.mod.firefly8.core.letters.KeyedLetter;
 import top.xdi8.mod.firefly8.core.letters.LettersUtil;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
 
 public class SymbolStoneBlock extends Block implements KeyedLetter.Provider {
@@ -24,21 +21,6 @@ public class SymbolStoneBlock extends Block implements KeyedLetter.Provider {
     public SymbolStoneBlock(BlockBehaviour.Properties properties, KeyedLetter letter) {
         super(properties);
         this.letter = letter;
-    }
-
-    @Override
-    public void appendHoverText(@NotNull ItemStack stack, Item.@NotNull TooltipContext context,
-                                @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
-        super.appendHoverText(stack, context, tooltip, flag);
-        if (letter.isNull()) return;
-        List<String> sb = new ArrayList<>();
-        if (letter.hasUppercase()) sb.add(Character.toString(letter.uppercase()));
-        if (letter.hasMiddleCase()) sb.add(Character.toString(letter.middleCase()));
-        if (letter.hasLowercase()) sb.add(Character.toString(letter.lowercase()));
-        String s = join(sb.iterator(), " ");
-        if (!s.isBlank()) {
-            tooltip.add(Component.translatable("block.firefly8.symbol_stone.letter", s));
-        }
     }
 
     @NotNull
@@ -77,25 +59,9 @@ public class SymbolStoneBlock extends Block implements KeyedLetter.Provider {
         return block;
     }
 
-    public static String getBlockId(ResourceLocation key){
+    public static String getBlockId(Identifier key){
         if (Firefly8.MODID.equals(key.getNamespace())) return "symbol_stone_" + key.getPath();
         else return "symbol_stone_" + key.getNamespace() + "__" + key.getPath();
-    }
-
-    // from plexus-utils
-    @SuppressWarnings("SameParameterValue")
-    private static String join(Iterator<?> iterator, String separator) {
-        if ( separator == null ) {
-            separator = "";
-        }
-        StringBuilder buf = new StringBuilder( 256 ); // Java default is 16, probably too small
-        while ( iterator.hasNext() ) {
-            buf.append( iterator.next() );
-            if ( iterator.hasNext() ) {
-                buf.append( separator );
-            }
-        }
-        return buf.toString();
     }
 
     @FunctionalInterface

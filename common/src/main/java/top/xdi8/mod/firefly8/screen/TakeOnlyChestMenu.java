@@ -8,7 +8,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
-// import top.xdi8.mod.firefly8.ext.IServerPlayerWithHiddenInventory;
 
 public class TakeOnlyChestMenu extends AbstractContainerMenu {
     private final Inventory inventory;

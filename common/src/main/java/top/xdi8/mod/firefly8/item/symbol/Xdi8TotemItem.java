@@ -48,7 +48,6 @@ public class Xdi8TotemItem extends Item {
         return InteractionResult.SUCCESS.heldItemTransformedTo(item);
     }
 
-    @Override
     public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag tooltipFlag) {
         @Nullable TotemAbility ability = getAbility(stack);
         if (ability != null) {

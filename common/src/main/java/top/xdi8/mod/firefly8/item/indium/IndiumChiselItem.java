@@ -5,7 +5,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -107,7 +106,7 @@ public class IndiumChiselItem extends Item {
             }
         }
         double[] array2 = softmax(array1);
-        double random = level.random.nextDouble();
+        double random = level.getRandom().nextDouble();
         double cumulated = 0.0;
         for (int i = 0; i < letterList.size(); ++i) {
             cumulated += array2[i];
@@ -125,7 +124,7 @@ public class IndiumChiselItem extends Item {
         Player player = pContext.getPlayer();
         if (player == null) return InteractionResult.PASS;
         if (level.getBlockState(clickedPos).is(SymbolStoneBlock.fromLetter(KeyedLetter.empty()))) {
-            stack.hurtAndBreak(1, pContext.getPlayer(), LivingEntity.getSlotForHand(pContext.getHand()));
+            stack.hurtAndBreak(1, pContext.getPlayer(), net.minecraft.world.entity.EquipmentSlot.MAINHAND);
             List<SymbolStoneProductionRecipe> recipeList = ((ServerLevel) level).recipeAccess().getRecipes().stream()
                     .filter((recipeHolder) -> recipeHolder.value().getType() == FireflyRecipes.PRODUCE_TYPE.get())
                     .map((recipeHolder) -> (SymbolStoneProductionRecipe) recipeHolder.value())

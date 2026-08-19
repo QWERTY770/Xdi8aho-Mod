@@ -2,7 +2,7 @@ package top.xdi8.mod.firefly8.core.letters.event;
 
 import dev.architectury.event.Event;
 import dev.architectury.event.EventFactory;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import top.xdi8.mod.firefly8.core.letters.KeyedLetter;
 import top.xdi8.mod.firefly8.core.totem.TotemAbility;
 
@@ -13,5 +13,5 @@ public interface Xdi8RegistryEvents<T> {
     Event<Consumer<Xdi8RegistryEvents<KeyedLetter>>> LETTER = EventFactory.createConsumerLoop();
     Event<Consumer<Xdi8RegistryEvents<TotemAbility>>> TOTEM = EventFactory.createConsumerLoop();
 
-    void register(ResourceLocation id, T item);
+    void register(Identifier id, T item);
 }

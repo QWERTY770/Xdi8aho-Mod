@@ -8,7 +8,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.animal.Bee;
+import net.minecraft.world.entity.animal.bee.Bee;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BottleItem;
 import net.minecraft.world.item.ItemStack;
@@ -78,7 +78,7 @@ public class TintedGlassBottleItem extends BottleItem {
                     releaseBeesAndResetHoneyLevel(level, state, blockPos, player);
                 } else resetHoneyLevel(level, state, blockPos);
             }
-            return level.isClientSide ? InteractionResult.SUCCESS : InteractionResult.CONSUME;
+            return level.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.CONSUME;
         }
         return super.useOn(pContext);
     }
@@ -116,7 +116,7 @@ public class TintedGlassBottleItem extends BottleItem {
 
             for (Bee bee : list) {
                 if (bee.getTarget() == null) {
-                    bee.setTarget(list1.get(pLevel.random.nextInt(i)));
+                    bee.setTarget(list1.get(pLevel.getRandom().nextInt(i)));
                 }
             }
         }

@@ -1,9 +1,9 @@
 package top.xdi8.mod.firefly8.core.letters;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public interface KeyedLetter {
-    ResourceLocation id();
+    Identifier id();
     boolean hasLowercase();
     int lowercase();
 

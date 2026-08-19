@@ -4,10 +4,9 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.qwerty770.mcmod.xdi8.registries.ResourceLocationTool;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
@@ -17,6 +16,7 @@ import top.xdi8.mod.firefly8.core.letters.KeyedLetter;
 import top.xdi8.mod.firefly8.core.letters.LettersUtil;
 import top.xdi8.mod.firefly8.core.totem.TotemAbilities;
 import top.xdi8.mod.firefly8.core.totem.TotemAbility;
+import top.xdi8.mod.firefly8.Firefly8;
 import top.xdi8.mod.firefly8.item.FireflyItemTags;
 import top.xdi8.mod.firefly8.item.symbol.SymbolStoneBlockItem;
 import top.xdi8.mod.firefly8.item.symbol.Xdi8TotemItem;
@@ -27,7 +27,6 @@ import java.util.List;
 
 @ParametersAreNonnullByDefault
 public class TotemRecipe implements Recipe<TotemRecipeInput> {
-    // public Ingredient input;
     public final List<KeyedLetter> letters;
     public final TotemAbility ability;
     private @Nullable PlacementInfo placementInfo;
@@ -71,8 +70,18 @@ public class TotemRecipe implements Recipe<TotemRecipeInput> {
     }
 
     @Override
-    public @NotNull ItemStack assemble(TotemRecipeInput input, HolderLookup.Provider registries) {
+    public @NotNull ItemStack assemble(TotemRecipeInput input) {
         return Xdi8TotemItem.withTotemAbility(input.getItem(0).copy(), ability);
+    }
+
+    @Override
+    public boolean showNotification() {
+        return true;
+    }
+
+    @Override
+    public @NotNull String group() {
+        return Firefly8.MODID;
     }
 
     @Override
@@ -98,16 +107,16 @@ public class TotemRecipe implements Recipe<TotemRecipeInput> {
         return FireflyRecipes.TOTEM_CATEGORY.get();
     }
 
-    public static class Serializer implements RecipeSerializer<TotemRecipe> {
-        private static final MapCodec<TotemRecipe> CODEC = RecordCodecBuilder.mapCodec((instance) ->
+    public static final MapCodec<TotemRecipe> CODEC = RecordCodecBuilder.mapCodec((instance) ->
                 instance.group(Codec.STRING.listOf().fieldOf("letters").forGetter((arg) ->
                                 arg.letters.stream().map((letter -> letter.id().toString())).toList()),
                                Codec.STRING.fieldOf("ability").forGetter((arg) -> arg.ability.getId().toString()))
                         .apply(instance, TotemRecipe::fromStrings));
-        private static final StreamCodec<RegistryFriendlyByteBuf, TotemRecipe> STREAM_CODEC =
-                StreamCodec.of(Serializer::toNetwork, Serializer::fromNetwork);
+    public static final StreamCodec<RegistryFriendlyByteBuf, TotemRecipe> STREAM_CODEC =
+            StreamCodec.of(Serializer::toNetwork, Serializer::fromNetwork);
+    public static final RecipeSerializer<TotemRecipe> SERIALIZER = new RecipeSerializer<>(CODEC, STREAM_CODEC);
 
-        public static @NotNull TotemRecipe fromNetwork(RegistryFriendlyByteBuf buf) {
+    static class Serializer {public static @NotNull TotemRecipe fromNetwork(RegistryFriendlyByteBuf buf) {
             final String ability = buf.readUtf();
             TotemAbility totemAbility = TotemAbilities.byId(ResourceLocationTool.create(ability))
                     .orElseThrow(() -> new IllegalArgumentException("Invalid totem ability: " + ability));
@@ -122,26 +131,16 @@ public class TotemRecipe implements Recipe<TotemRecipeInput> {
             return new TotemRecipe(letterList, totemAbility);
         }
 
-        public static void toNetwork(RegistryFriendlyByteBuf buf, @NotNull TotemRecipe recipe) {
+        public static void toNetwork(RegistryFriendlyByteBuf buf, TotemRecipe recipe) {
             buf.writeUtf(recipe.ability.getId().toString());
             List<String> letters = recipe.letters.stream()
                     .map(KeyedLetter::id)
-                    .map(ResourceLocation::toString)
+                    .map(Identifier::toString)
                     .toList();
             buf.writeInt(letters.size());
             for (String letter : letters) {
                 buf.writeUtf(letter);
             }
-        }
-
-        @Override
-        public @NotNull MapCodec<TotemRecipe> codec() {
-            return CODEC;
-        }
-
-        @Override
-        public @NotNull StreamCodec<RegistryFriendlyByteBuf, TotemRecipe> streamCodec() {
-            return STREAM_CODEC;
         }
     }
 }

@@ -1,21 +1,21 @@
 package io.github.qwerty770.mcmod.xdi8.registries;
 
 import io.github.qwerty770.mcmod.xdi8.annotation.StableApi;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 @SuppressWarnings("unused")
 @StableApi(since = "3.0.0-beta1")
 public class ResourceLocationTool {
-    // For compatibility between 1.21 and older versions.
-    public static ResourceLocation create(String namespace, String path){
-        return ResourceLocation.fromNamespaceAndPath(namespace, path);
+    // For compatibility between versions.
+    public static Identifier create(String namespace, String path){
+        return Identifier.fromNamespaceAndPath(namespace, path);
     }
 
-    public static ResourceLocation create(String location){
-        return ResourceLocation.parse(location);
+    public static Identifier create(String location){
+        return Identifier.parse(location);
     }
 
-    public static ResourceLocation withDefaultNamespace(String location){
-        return ResourceLocation.withDefaultNamespace(location);
+    public static Identifier withDefaultNamespace(String location){
+        return Identifier.withDefaultNamespace(location);
     }
 }

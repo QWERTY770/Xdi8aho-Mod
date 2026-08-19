@@ -5,22 +5,18 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.util.RandomSource;
 import org.jetbrains.annotations.NotNull;
 
-public class FireflyParticle extends TextureSheetParticle {
-    public FireflyParticle(ClientLevel level, double x, double y, double z, double xs, double ys, double zs) {
-        super(level, x, y, z, xs, ys, zs);
+public class FireflyParticle extends SingleQuadParticle {
+    public FireflyParticle(ClientLevel level, double x, double y, double z, double xs, double ys, double zs, SpriteSet sprites) {
+        super(level, x, y, z, xs, ys, zs, sprites.get(level.getRandom()));
         this.setLifetime(80 + random.nextInt(16));
     }
 
     @Override
-    protected int getLightColor(float pPartialTick) {
-        return 240;
-    }
-
-    @Override
-    public @NotNull ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
+    public @NotNull SingleQuadParticle.Layer getLayer() {
+        return SingleQuadParticle.Layer.TRANSLUCENT;
     }
 
     @Override
@@ -43,9 +39,8 @@ public class FireflyParticle extends TextureSheetParticle {
             this.sprite = sprites;
         }
 
-        public Particle createParticle(@NotNull SimpleParticleType type, @NotNull ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-            FireflyParticle particle = new FireflyParticle(level, x, y, z, xSpeed, ySpeed, zSpeed);
-            particle.pickSprite(sprite);
+        public Particle createParticle(@NotNull SimpleParticleType type, @NotNull ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, @NotNull RandomSource random) {
+            FireflyParticle particle = new FireflyParticle(level, x, y, z, xSpeed, ySpeed, zSpeed, sprite);
             particle.setAlpha(1.0F);
             return particle;
         }

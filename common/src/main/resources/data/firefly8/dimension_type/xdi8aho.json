@@ -1,24 +1,56 @@
 {
-  "name": "firefly8:xdi8aho",
-  "ambient_light": 0.1,
-  "bed_works": true,
-  "coordinate_scale": 1.0,
-  "effects": "minecraft:overworld",
-  "has_ceiling": false,
-  "has_raids": false,
+  "attributes": {
+    "minecraft:audio/ambient_sounds": {
+      "mood": {
+        "block_search_extent": 8,
+        "offset": 2.0,
+        "sound": "minecraft:ambient.cave",
+        "tick_delay": 6000
+      }
+    },
+    "minecraft:audio/background_music": {
+      "creative": {
+        "max_delay": 24000,
+        "min_delay": 12000,
+        "sound": "minecraft:music.creative"
+      },
+      "default": {
+        "max_delay": 24000,
+        "min_delay": 12000,
+        "sound": "minecraft:music.game"
+      }
+    },
+    "minecraft:gameplay/bed_rule": {
+      "can_sleep": "when_dark",
+      "can_set_spawn": "always",
+      "explodes": false,
+      "error_message": "block.minecraft.bed.no_sleep"
+    },
+    "minecraft:gameplay/nether_portal_spawns_piglin": true,
+    "minecraft:gameplay/respawn_anchor_works": false,
+    "minecraft:visual/ambient_light_color": "#0a0a0a",
+    "minecraft:visual/cloud_color": "#ccffffff",
+    "minecraft:visual/cloud_height": 192.33,
+    "minecraft:visual/fog_color": "#c0d8ff",
+    "minecraft:visual/sky_color": "#78a7ff"
+  },
+  "default_clock": "minecraft:overworld",
+  "timelines": "#minecraft:in_overworld",
   "has_skylight": true,
-  "height": 384,
-  "infiniburn": "#minecraft:infiniburn_overworld",
+  "has_ceiling": false,
+  "has_ender_dragon_fight": false,
+  "coordinate_scale": 1,
+  "ambient_light": 0.1,
+  "has_fixed_time": false,
   "logical_height": 384,
+  "skybox": "overworld",
+  "infiniburn": "#minecraft:infiniburn_overworld",
   "min_y": -64,
-  "monster_spawn_block_light_limit": 0,
+  "height": 384,
   "monster_spawn_light_level": {
     "type": "minecraft:uniform",
-    "max_inclusive": 7,
-    "min_inclusive": 0
+    "min_inclusive": 0,
+    "max_inclusive": 7
   },
-  "natural": true,
-  "piglin_safe": true,
-  "respawn_anchor_works": false,
-  "ultrawarm": false
+  "monster_spawn_block_light_limit": 0
 }

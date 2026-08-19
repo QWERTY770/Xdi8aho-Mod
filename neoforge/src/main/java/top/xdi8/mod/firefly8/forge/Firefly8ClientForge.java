@@ -1,16 +1,14 @@
 package top.xdi8.mod.firefly8.forge;
 
+import net.minecraft.client.model.object.boat.BoatModel;
 import net.minecraft.client.renderer.entity.NoopRenderer;
-import net.minecraft.client.renderer.special.StandingSignSpecialRenderer;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
-import net.neoforged.neoforge.client.event.RegisterSpecialBlockModelRendererEvent;
 import top.xdi8.mod.firefly8.Firefly8Client;
-import top.xdi8.mod.firefly8.block.FireflyBlocks;
 import top.xdi8.mod.firefly8.client.FireflyParticle;
 import top.xdi8.mod.firefly8.entity.FireflyEntityTypes;
 import top.xdi8.mod.firefly8.particle.FireflyParticles;
@@ -18,7 +16,7 @@ import top.xdi8.mod.firefly8.particle.FireflyParticles;
 public class Firefly8ClientForge {
     public Firefly8ClientForge() { }
 
-    @EventBusSubscriber(value = Dist.CLIENT, modid = "firefly8", bus = EventBusSubscriber.Bus.MOD)
+    @EventBusSubscriber(value = Dist.CLIENT, modid = "firefly8")
     public static final class Firefly8ClientEvents {
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
@@ -26,8 +24,9 @@ public class Firefly8ClientForge {
         }
 
         @SubscribeEvent
-        public static void registerSpecialBlockRenderers(RegisterSpecialBlockModelRendererEvent event) {
-            event.register(FireflyBlocks.CEDAR_SIGN.get(), new StandingSignSpecialRenderer.Unbaked(FireflyBlocks.redwoodType));
+        public static void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
+            event.registerLayerDefinition(Firefly8Client.CEDAR_BOAT_LAYER, BoatModel::createBoatModel);
+            event.registerLayerDefinition(Firefly8Client.CEDAR_CHEST_BOAT_LAYER, BoatModel::createChestBoatModel);
         }
 
         @SubscribeEvent

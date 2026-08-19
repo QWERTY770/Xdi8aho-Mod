@@ -3,8 +3,6 @@ package top.xdi8.mod.firefly8.entity;
 import it.unimi.dsi.fastutil.objects.Object2LongLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.TagKey;
@@ -20,13 +18,14 @@ import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.ai.util.AirAndWaterRandomPos;
 import net.minecraft.world.entity.ai.util.HoverRandomPos;
-import net.minecraft.world.entity.animal.FlyingAnimal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import top.xdi8.mod.firefly8.particle.FireflyParticles;
@@ -40,10 +39,10 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
- * @see net.minecraft.world.entity.animal.Bee
+ * @see net.minecraft.world.entity.animal.bee.Bee
  * @see net.minecraft.world.entity.ambient.Bat
  */
-public class FireflyEntity extends PathfinderMob implements FlyingAnimal {
+public class FireflyEntity extends PathfinderMob {
     private int lightTime;
     private final Object2LongMap<UUID> ownerMap = new Object2LongLinkedOpenHashMap<>();
 
@@ -57,7 +56,7 @@ public class FireflyEntity extends PathfinderMob implements FlyingAnimal {
 
     protected FireflyEntity(EntityType<FireflyEntity> entityType, Level level) {
         super(entityType, level);
-        this.moveControl = new FlyingMoveControl(this, 20, false);
+        this.moveControl = new FlyingMoveControl<>(this, 20, false);
     }
 
     public void addOwnerUUID(long outOfBottleTime, @Nullable UUID uuid) {
@@ -86,22 +85,19 @@ public class FireflyEntity extends PathfinderMob implements FlyingAnimal {
     }
 
     @Override
-    public void addAdditionalSaveData(@NotNull CompoundTag pCompound) {
-        super.addAdditionalSaveData(pCompound);
-        // New Schema, 22 Jul, teddyxlandlee
-        pCompound.put("OwnerData", FireflyEntityData.serializeOwners(this.getOwnerMap()));
+    protected void addAdditionalSaveData(@NotNull ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        FireflyEntityData.serializeOwners(output.childrenList("OwnerData"), this.getOwnerMap());
     }
 
     @Override
-    public void readAdditionalSaveData(@NotNull CompoundTag pCompound) {
-        super.readAdditionalSaveData(pCompound);
-        if (pCompound.contains("OwnerData", Tag.TAG_LIST)) {
-            FireflyEntityData.deserializeOwners(this.getOwnerMap(), pCompound.getList("OwnerData", Tag.TAG_COMPOUND));
-        }
+    protected void readAdditionalSaveData(@NotNull ValueInput input) {
+        super.readAdditionalSaveData(input);
+        FireflyEntityData.deserializeOwners(this.getOwnerMap(), input.childrenListOrEmpty("OwnerData"));
     }
 
     private boolean shouldDamage() {
-        if (this.level().isDay()) {
+        if (this.level().isBrightOutside()) {
             BlockPos blockpos = new BlockPos((int) this.getX(), (int) this.getEyeY(), (int) this.getZ());
             return this.level().getBrightness(LightLayer.SKY, blockpos) > 0.5F && this.level().canSeeSky(blockpos);
         }
@@ -182,17 +178,12 @@ public class FireflyEntity extends PathfinderMob implements FlyingAnimal {
     }
 
     @Override
-    public boolean causeFallDamage(float pFallDistance, float pMultiplier, @NotNull DamageSource pSource) {
-        return false;
-    }
-
-    @Override
     protected void checkFallDamage(double pY, boolean pOnGround, @NotNull BlockState pState, @NotNull BlockPos pPos) {
         // NO-OP
     }
 
     @Override
-    public boolean isFlying() {
+    public boolean isFlapping() {
         return !this.onGround();
     }
 
