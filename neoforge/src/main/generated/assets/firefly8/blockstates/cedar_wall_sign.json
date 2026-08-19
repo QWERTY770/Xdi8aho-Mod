@@ -1,7 +1,19 @@
 {
   "variants": {
-    "": {
-      "model": "firefly8:block/cedar_sign"
+    "facing=east": {
+      "model": "firefly8:block/cedar_wall_sign",
+      "y": 270
+    },
+    "facing=north": {
+      "model": "firefly8:block/cedar_wall_sign",
+      "y": 180
+    },
+    "facing=south": {
+      "model": "firefly8:block/cedar_wall_sign"
+    },
+    "facing=west": {
+      "model": "firefly8:block/cedar_wall_sign",
+      "y": 90
     }
   }
 }

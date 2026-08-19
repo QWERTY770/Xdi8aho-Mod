@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "firefly8:block/cedar_wall_hanging_sign",
+      "y": 270
+    },
+    "facing=north": {
+      "model": "firefly8:block/cedar_wall_hanging_sign",
+      "y": 180
+    },
+    "facing=south": {
+      "model": "firefly8:block/cedar_wall_hanging_sign"
+    },
+    "facing=west": {
+      "model": "firefly8:block/cedar_wall_hanging_sign",
+      "y": 90
+    }
+  }
+}

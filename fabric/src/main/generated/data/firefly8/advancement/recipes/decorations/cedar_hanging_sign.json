@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_stripped_log": {
+      "conditions": {
+        "items": [
+          {
+            "items": "firefly8:stripped_cedar_log"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "firefly8:cedar_hanging_sign"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_stripped_log"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "firefly8:cedar_hanging_sign"
+    ]
+  }
+}

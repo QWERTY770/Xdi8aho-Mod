@@ -2,7 +2,6 @@
   "type": "minecraft:stonecutting",
   "ingredient": "firefly8:symbol_stone_bricks",
   "result": {
-    "count": 1,
     "id": "firefly8:symbol_stone_brick_stairs"
   }
 }

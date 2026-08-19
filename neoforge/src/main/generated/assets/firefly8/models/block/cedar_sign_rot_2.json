@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/template_sign_rot_2",
+  "textures": {
+    "all": "firefly8:block/cedar_sign",
+    "particle": "firefly8:block/cedar_planks"
+  }
+}

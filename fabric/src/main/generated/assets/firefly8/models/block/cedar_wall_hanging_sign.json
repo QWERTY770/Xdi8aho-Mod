@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/template_wall_hanging_sign",
+  "textures": {
+    "all": "firefly8:block/cedar_hanging_sign",
+    "particle": "firefly8:block/stripped_cedar_log"
+  }
+}
